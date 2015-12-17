@@ -1,0 +1,98 @@
+<configuration>
+  <property>
+    <name>sentinel_port</name>
+    <value>26379</value>
+    <description>
+    	The port that this sentinel instance will run on
+    </description>
+  </property>
+  <property>
+    <name>sentinel_logfile</name>
+    <value>/var/log/redis/sentinel.log</value>
+    <description>
+    	Location of the sentinel log
+    </description>
+  </property>
+  <property>
+    <name>sentinel_log_dir</name>
+    <value>/tmp</value>
+    <description>
+		Specify the log file name. Also the empty string can be used to force
+		Redis to log on the standard output. Note that if you use standard
+		output for logging but daemonize, logs will be sent to /dev/null
+    </description>
+  </property>
+  <property>
+    <name>master_name</name>
+    <value>redis-master</value>
+    <description>
+		Tells Sentinel to monitor this master, and to consider it in O_DOWN
+		(Objectively Down) state only if at least quorum sentinels agree.
+		
+		Note that whatever is the ODOWN quorum, a Sentinel will require to
+		be elected by the majority of the known Sentinels in order to
+		start a failover, so no failover can be performed in minority.
+		
+		Note: master name should not include special characters or spaces.
+		The valid charset is A_z 0_9 and the three characters ".__".
+    </description>
+  </property>
+  <property>
+    <name>master_ip</name>
+    <value></value>
+    <description>
+    	DO NOT USE 127.0.0.1 but the real IP of the server
+    
+    	Tells Sentinel to monitor this master, and to consider it in O_DOWN
+		(Objectively Down) state only if at least quorum sentinels agree.
+		
+		Note that whatever is the ODOWN quorum, a Sentinel will require to
+		be elected by the majority of the known Sentinels in order to
+		start a failover, so no failover can be performed in minority.
+		
+		Note: master name should not include special characters or spaces.
+		The valid charset is A_z 0_9 and the three characters ".__".
+    </description>
+  </property>
+  <property>
+    <name>quorum</name>
+    <value>2</value>
+    <description>
+    	Tells Sentinel to monitor this master, and to consider it in O_DOWN
+		(Objectively Down) state only if at least quorum sentinels agree.
+		
+		Note that whatever is the ODOWN quorum, a Sentinel will require to
+		be elected by the majority of the known Sentinels in order to
+		start a failover, so no failover can be performed in minority.
+		
+		Note: master name should not include special characters or spaces.
+		The valid charset is A_z 0_9 and the three characters ".__".
+    </description>
+  </property>
+  <property>
+  	<name>blacklist_threshold</name>
+  	<value>11</value>
+  	<description>
+  		sentinel down_after_milliseconds master_name milliseconds
+		
+		Number of milliseconds the master (or any attached slave or sentinel) should
+		be unreachable (as in, not acceptable reply to PING, continuously, for the
+		specified period) in order to consider it in S_DOWN state (Subjectively
+		Down).
+		
+		Default is 30 seconds.
+  	</description>
+  </property>
+  <property>
+  	<name>numslaves</name>
+  	<value>11</value>
+  	<description>
+		sentinel parallel_syncs master_name numslaves
+		
+		How many slaves we can reconfigure to point to the new slave simultaneously
+		during the failover. Use a low number if you use the slaves to serve query
+		to avoid that all the slaves will be unreachable at about the same
+		time while performing the synchronization with the master.
+  	</description>
+  </property>
+</configuration>

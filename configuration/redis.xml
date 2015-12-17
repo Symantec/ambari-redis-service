@@ -1,0 +1,234 @@
+ <configuration>
+  <property>
+    <name>daemonize</name>
+    <value>yes</value>
+    <description>
+    	By default Redis does not run as a daemon. Use 'yes' if you need it. Note that Redis will write a pid file in /var/run/redis.pid when daemonized.
+    </description>
+  </property>
+  <property>
+    <name>port</name>
+    <value>6379</value>
+    <description>
+    	Accept connections on the specified port, default is 6379. If port 0 is specified Redis will not listen on a TCP socket.
+    </description>
+  </property>
+  <property>
+    <name>bind</name>
+    <value>0.0.0.0</value>
+    <description>
+    	If you want you can bind a single interface, if the bind option is not specified all the interfaces will listen for incoming connections.
+    </description>
+  </property>
+  <property>
+    <name>timeout</name>
+    <value>0</value>
+    <description>
+    	Close the connection after a client is idle for N seconds (0 to disable)
+    </description>
+  </property>
+  <property>
+    <name>loglevel</name>
+    <value>notice</value>
+    <description>
+    	Set server verbosity to:
+    		debug (a lot of information, useful for development/testing)
+			verbose (many rarely useful info, but not a mess like the debug level)
+			notice (moderately verbose, what you want in production probably)
+			warning (only very important / critical messages are logged)
+    </description>
+  </property>
+  <property>
+    <name>logfile</name>
+    <value>/var/log/redis/redis.log</value>
+    <description>
+    	Specify the log file name. Also 'stdout' can be used to force Redis to log on the standard output. Note that if you use standard output for logging but daemonize, logs will be sent to /dev/null
+    </description>
+  </property>
+  <property>
+    <name>databases</name>
+    <value>16</value>
+    <description>
+    	Set the number of databases. The default database is DB 0, you can select a different one on a per-connection basis using SELECT dbid where dbid is a number between 0 and 'databases'-1
+    </description>
+  </property>
+  <property>
+    <name>rdbcompression</name>
+    <value>yes</value>
+    <description>
+    	Compress string objects using LZF when dump .rdb databases? If you want to save some CPU in the saving child set it to 'no' but the dataset will likely be bigger if you have compressible values or keys.
+    </description>
+  </property>
+  <property>
+    <name>dbfilename</name>
+    <value>dump.rdb</value>
+    <description>
+    	The filename where to dump the DB
+    </description>
+  </property>
+  <property>
+    <name>dbdir</name>
+    <value>/var/lib/redis/</value>
+    <description>
+    	The DB will be written inside this directory, with the filename specified above using the 'dbfilename' configuration directive. Also the Append Only File will be created inside this directory. Note that you must specify a directory here, not a file name.
+    </description>
+  </property>
+  <property>
+    <name>slave_serve_stale_data</name>
+    <value>yes</value>
+    <description>
+		 When a slave lost the connection with the master, or when the replication
+		 is still in progress, the slave can act in two different ways:
+		
+		 1) if slave_serve_stale_data is set to 'yes' (the default) the slave will
+		    still reply to client requests, possibly with out of data data, or the
+		    data set may just be empty if this is the first synchronization.
+		
+		 2) if slave-serve-stale data is set to 'no' the slave will reply with
+		    an error "SYNC with master in progress" to all the kind of commands
+		    but to INFO and SLAVEOF.
+    </description>
+  </property>
+  <property>
+    <name>maxclients</name>
+    <value>0</value>
+    <description>
+		Set the max number of connected clients at the same time. By default there
+		is no limit, and it's up to the number of file descriptors the Redis process
+		is able to open. The special value '0' means no limits.
+		Once the limit is reached Redis will close all the new connections sending
+		an error 'max number of clients reached'.   	
+    </description>
+  </property>
+  <property>
+    <name>appendonly</name>
+    <value>no</value>
+    <description>
+		By default Redis asynchronously dumps the dataset on disk. If you can live
+		with the idea that the latest records will be lost if something like a crash
+		happens this is the preferred way to run Redis. If instead you care a lot
+		about your data and don't want to that a single record can get lost you should
+		enable the append only mode: when this mode is enabled Redis will append
+		every write operation received in the file appendonly.aof. This file will
+		be read on startup in order to rebuild the full dataset in memory.
+		
+		Note that you can have both the async dumps and the append only file if you
+		like (you have to comment the "save" statements above to disable the dumps).
+		Still if append only mode is enabled Redis will load the data from the
+		log file at startup ignoring the dump.rdb file.
+		
+		IMPORTANT: Check the BGREWRITEAOF to check how to rewrite the append
+		log file in background when it gets too big.
+    </description>
+  </property>
+  <property>
+    <name>appendfsync</name>
+    <value>everysec</value>
+    <description>
+		The fsync() call tells the Operating System to actually write data on disk
+		instead to wait for more data in the output buffer. Some OS will really flush 
+		data on disk, some other OS will just try to do it ASAP.
+		
+		Redis supports three different modes:
+		
+		no: don't fsync, just let the OS flush the data when it wants. Faster.
+		always: fsync after every write to the append only log . Slow, Safest.
+		everysec: fsync only if one second passed since the last fsync. Compromise.
+		
+		The default is "everysec" that's usually the right compromise between
+		speed and data safety. It's up to you to understand if you can relax this to
+		"no" that will will let the operating system flush the output buffer when
+		it wants, for better performances (but if you can live with the idea of
+		some data loss consider the default persistence mode that's snapshotting),
+		or on the contrary, use "always" that's very slow but a bit safer than
+		everysec.
+		
+		If unsure, use "everysec".
+    </description>
+  </property>
+  <property>
+    <name>no_appendfsync_on_rewrite</name>
+    <value>no</value>
+    <description>
+		When the AOF fsync policy is set to always or everysec, and a background
+		saving process (a background save or AOF log background rewriting) is
+		performing a lot of I/O against the disk, in some Linux configurations
+		Redis may block too long on the fsync() call. Note that there is no fix for
+		this currently, as even performing fsync in a different thread will block
+		our synchronous write(2) call.
+		
+		In order to mitigate this problem it's possible to use the following option
+		that will prevent fsync() from being called in the main process while a
+		BGSAVE or BGREWRITEAOF is in progress.
+		
+		This means that while another child is saving the durability of Redis is
+		the same as "appendfsync none", that in pratical terms means that it is
+		possible to lost up to 30 seconds of log in the worst scenario (with the
+		default Linux settings).
+		
+		If you have latency problems turn this to "yes". Otherwise leave it as
+		"no" that is the safest pick from the point of view of durability.
+    </description>
+  </property>
+  <property>
+    <name>auto_aof_rewrite_percentage</name>
+    <value>100</value>
+    <description>
+		Automatic rewrite of the append only file.
+		Redis is able to automatically rewrite the log file implicitly calling
+		BGREWRITEAOF when the AOF log size will growth by the specified percentage.
+		
+		This is how it works: Redis remembers the size of the AOF file after the
+		latest rewrite (or if no rewrite happened since the restart, the size of
+		the AOF at startup is used).
+		
+		This base size is compared to the current size. If the current size is
+		bigger than the specified percentage, the rewrite is triggered. Also
+		you need to specify a minimal size for the AOF file to be rewritten, this
+		is useful to avoid rewriting the AOF file even if the percentage increase
+		is reached but it is still pretty small.
+		
+		Specify a precentage of zero in order to disable the automatic AOF
+		rewrite feature.
+    </description>
+  </property>
+  <property>
+    <name>auto_aof_rewrite_min_size</name>
+    <value>64mb</value>
+    <description>
+		Automatic rewrite of the append only file.
+		Redis is able to automatically rewrite the log file implicitly calling
+		BGREWRITEAOF when the AOF log size will growth by the specified percentage.
+		
+		This is how it works: Redis remembers the size of the AOF file after the
+		latest rewrite (or if no rewrite happened since the restart, the size of
+		the AOF at startup is used).
+		
+		This base size is compared to the current size. If the current size is
+		bigger than the specified percentage, the rewrite is triggered. Also
+		you need to specify a minimal size for the AOF file to be rewritten, this
+		is useful to avoid rewriting the AOF file even if the percentage increase
+		is reached but it is still pretty small.
+		
+		Specify a precentage of zero in order to disable the automatic AOF
+		rewrite feature.
+    </description>
+  </property>
+  <property>
+    <name>slowlog_log_slower_than</name>
+    <value>10000</value>
+    <description>
+		The following time is expressed in microseconds, so 1000000 is equivalent
+		to one second. Note that a negative number disables the slow log, while
+		a value of zero forces the logging of every command.
+    </description>
+  </property>
+  <property>
+    <name>slowlog_max_len</name>
+    <value>1024</value>
+    <description>
+		There is no limit to this length. Just be aware that it will consume memory.
+		You can reclaim memory used by the slow log with SLOWLOG RESET.
+    </description>
+  </property>
+</configuration>

@@ -1,0 +1,73 @@
+<?xml version="1.0"?>
+<metainfo>
+  <schemaVersion>2.0</schemaVersion>
+  <services>
+    <service>
+      <name>REDIS</name>
+      <displayName>Redis</displayName>
+      <comment>Redis in-memory data structure store</comment>
+      <version>2.8.12-1</version>
+      <components>
+        <component>
+          <name>REDIS_SENTINEL</name>
+          <displayName>Redis-Sentinel</displayName>
+          <category>MASTER</category>
+          <cardinality>1+</cardinality>
+          <dependencies>
+          </dependencies>
+          <commandScript>
+            <script>scripts/redis_sentinel_service.py</script>
+            <scriptType>PYTHON</scriptType>
+            <timeout>600</timeout>
+          </commandScript>
+        </component>
+
+        <component>
+          <name>REDIS_SERVER</name>
+          <displayName>Redis-Master</displayName>
+          <category>MASTER</category>
+          <cardinality>1</cardinality>
+          <commandScript>
+            <script>scripts/redis_service.py</script>
+            <scriptType>PYTHON</scriptType>
+            <timeout>600</timeout>
+          </commandScript>
+        </component>
+        
+        <component>
+          <name>REDIS_SLAVE</name>
+          <displayName>Redis-Slave</displayName>
+          <category>SLAVE</category>
+          <cardinality>1+</cardinality>
+          <commandScript>
+            <script>scripts/redis_slave_service.py</script>
+            <scriptType>PYTHON</scriptType>
+            <timeout>600</timeout>
+          </commandScript>
+        </component>
+      </components>
+
+      <osSpecifics>
+        <osSpecific>
+          <osFamily>any</osFamily>
+          <packages>
+            <package>
+              <name>redis-2.8.12</name>
+            </package>
+          </packages>
+        </osSpecific>
+      </osSpecifics>
+
+      <commandScript>
+        <script>scripts/service_check.py</script>
+        <scriptType>PYTHON</scriptType>
+        <timeout>300</timeout>
+      </commandScript>
+      
+      <configuration-dependencies>
+        <config-type>redis</config-type>
+        <config-type>redis-sentinel</config-type>
+      </configuration-dependencies>
+    </service>
+  </services>
+</metainfo>
