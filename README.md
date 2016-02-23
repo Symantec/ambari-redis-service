@@ -1,4 +1,4 @@
-# ambari-redis-service
+# ambari-redis-service (For Ambari Version>2.1.1 and Redis Version=2.8.12)
 Ambari Redis Service / Custom Stack will allow you to install and manage Redis and Redis HA (with Sentinels and Slaves) via Ambari.
 To use simply download and copy the stack contents to:
 /var/lib/ambari-server/resources/stacks/HDP/${hdp.version}/services/REDIS/
